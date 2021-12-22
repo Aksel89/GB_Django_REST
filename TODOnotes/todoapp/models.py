@@ -16,7 +16,7 @@ class Todo(models.Model):
     note = models.TextField(verbose_name='TODO text')
     create_date = models.DateTimeField(verbose_name='Create date', auto_now_add=True)
     update_date = models.DateTimeField(verbose_name='Update date', auto_now=True)
-    users = models.ManyToManyField(Users)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE, blank=True, null=True)
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
