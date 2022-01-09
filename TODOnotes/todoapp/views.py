@@ -21,7 +21,6 @@ class ProjectFilter(filters.FilterSet):
 
 
 class ProjectViewSet(ModelViewSet):
-
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
     pagination_class = ProjectPaginatorLimit
@@ -43,7 +42,7 @@ class TodoViewSet(ModelViewSet):
         serializer.save(element_status=True)
 
     def destroy(self, request, *args, **kwargs):
-        todo =self.get_object()
+        todo = self.get_object()
         todo.is_active = False
         todo.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

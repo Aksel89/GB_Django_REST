@@ -28,5 +28,8 @@ router.register('todo', TodoViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/users/', UserViewSet.as_view({'get': 'list'})),
+    path('api/project/', ProjectViewSet.as_view({'get': 'list'})),
+    path('api/todo/', TodoViewSet.as_view({'get': 'list'}))
 ]
