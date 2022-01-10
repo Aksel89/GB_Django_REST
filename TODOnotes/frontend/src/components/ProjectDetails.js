@@ -26,8 +26,7 @@ const ProjectDetails = ({projects}) => {
                 Users
             </th>
             {filteredProjects.map((project) => <ProjectItem project={project} />)}
-        </table>
-            </center>
+        </table></center>
     )
 }
 

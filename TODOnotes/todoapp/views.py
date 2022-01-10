@@ -23,7 +23,7 @@ class ProjectFilter(filters.FilterSet):
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
-    pagination_class = ProjectPaginatorLimit
+    # pagination_class = ProjectPaginatorLimit
     filterset_class = ProjectFilter
 
 
@@ -35,7 +35,7 @@ class TodoViewSet(ModelViewSet):
 
     queryset = Todo.objects.all()
     serializer_class = TodoModelSerializer
-    pagination_class = TodoPaginatorLimit
+    # pagination_class = TodoPaginatorLimit
     filterset_fields = ['project']
 
     def perform_create(self, serializer):

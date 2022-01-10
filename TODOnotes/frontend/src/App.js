@@ -39,7 +39,7 @@ class App extends React.Component {
         .catch(error => console.log(error))
 
     axios
-        .get('http://127.0.0.1:8000/api/project/')
+        .get('http://127.0.0.1:8000/api/projects/')
         .then(response => {
             const projects = response.data
             this.setState({
@@ -88,7 +88,7 @@ class App extends React.Component {
                     <Route exact path='/projects' element={<ProjectList projects={this.state.projects} /> } />
                     <Route exact path='/todo' element={<TodoList todo={this.state.todo} /> } />
                     <Route path='/users' element={<Navigate to="/" />} />
-                    <Route path='/project/:id'   element={<ProjectDetails projects={this.state.projects} /> } />
+                    <Route path='/projects/:id'   element={<ProjectDetails projects={this.state.projects} /> } />
                     <Route path="*" element={<NotFound /> } />
                 </Routes>
             </BrowserRouter>

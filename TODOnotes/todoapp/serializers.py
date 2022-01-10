@@ -5,14 +5,13 @@ from .models import Project, Todo
 
 
 class ProjectModelSerializer(ModelSerializer):
-
     class Meta:
         model = Project
         fields = '__all__'
 
 
 class TodoModelSerializer(ModelSerializer):
-    project = StringRelatedField(many=True)
+    project = StringRelatedField(many=False)
 
     class Meta:
         model = Todo
