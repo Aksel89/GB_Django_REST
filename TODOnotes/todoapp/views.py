@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework import status
+from rest_framework.permissions import DjangoModelPermissions
 from django_filters import rest_framework as filters
 
 from todoapp.models import Project, Todo
@@ -25,6 +26,7 @@ class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectModelSerializer
     # pagination_class = ProjectPaginatorLimit
     filterset_class = ProjectFilter
+    permission_classes = [DjangoModelPermissions]
 
 
 class TodoPaginatorLimit(LimitOffsetPagination):
@@ -37,6 +39,7 @@ class TodoViewSet(ModelViewSet):
     serializer_class = TodoModelSerializer
     # pagination_class = TodoPaginatorLimit
     filterset_fields = ['project']
+    permission_classes = [DjangoModelPermissions]
 
     def perform_create(self, serializer):
         serializer.save(element_status=True)
