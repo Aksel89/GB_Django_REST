@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React from "react";
+import {Link} from 'react-router-dom';
 
 export const Box = styled.div`
 padding: 20px 10px;
@@ -58,15 +59,18 @@ return (
 	<Box>
 		<Container>
         <Row>
-          <Column>
-            <HeaderLink href="#">что-то №1</HeaderLink>
-          </Column>
-          <Column>
-            <HeaderLink href="#">что-то №2</HeaderLink>
-          </Column>
-          <Column>
-            <HeaderLink href="#">что-то №3</HeaderLink>
-          </Column>
+            <Column>
+                <Link to="/">Пользователи</Link>
+            </Column>
+            <Column>
+                <Link to="/projects">Проекты</Link>
+            </Column>
+            <Column>
+                <Link to="/todo">Список заданий</Link>
+            </Column>
+            <Column>
+                {this.is_auth() ? <button onClick={() => this.logout()}>Выход</button> : <button onClick='document.location="/login"'>Вход</button>}
+            </Column>
         </Row>
       </Container>
 	</Box>
