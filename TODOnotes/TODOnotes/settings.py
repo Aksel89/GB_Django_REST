@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'users',
     'corsheaders',
+    'graphene_django',
     'todoapp',
 ]
 
@@ -153,4 +154,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
 
+}
+
+GRAPHENE = {
+    "SCHEMA": "users.schema.schema"
 }
