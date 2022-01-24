@@ -9,6 +9,8 @@ import ProjectDetails from "./components/ProjectDetails";
 import LoginForm from "./components/LoginForm";
 import {Box, Row, Column, Container} from "./components/header.js";
 import axios from "axios"
+import ProjectForm from "./components/ProjectForm";
+import TodoForm from "./components/TodoForm";
 
 
 const NotFound = ({ }) => {
@@ -118,6 +120,50 @@ class App extends React.Component {
 
     }
 
+    deleteTodo(id) {
+        const headers = this.get_headers()
+        axios
+            .delete(`https://127.0.0.1:8000/api/todo/${id}`, {headers})
+            .then(response => {
+                this.setState({todo: this.state.kanbans.filter((item) => item.id !== id)})
+            })
+            .catch(error => console.log(error))
+    }
+
+    deleteProject(id) {
+        const headers = this.get_headers()
+        axios
+            .delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers})
+            .then(response => {
+                this.setState({projects: this.state.projects.filter((item) => item.id !== id)})
+            })
+            .catch(error => console.log(error))
+    }
+
+     createTodo(text, project, user) {
+        const headers = this.get_headers()
+        const data = {text: text, project: project, user: user}
+        axios.post(`http://127.0.0.1:8000/api/todo/`, data, {headers})
+            .then(response => {
+                let add_todo = response.data
+                const project = this.state.projects.filter((item) => item.id === add_todo.project)[0]
+                const user = this.state.users.filter((item) => item.id === add_todo.user)[0]
+                add_todo.project = project
+                add_todo.user = user
+                this.setState({kanbans: [...this.state.todo, add_todo]})
+            }).catch(error => console.log(error))
+    }
+
+    createProject(name) {
+        const headers = this.get_headers()
+        const data = {name: name}
+        axios.post(`http://127.0.0.1:8000/api/projects/`, data, {headers})
+            .then(response => {
+                let add_project = response.data
+                this.setState({projects: [...this.state.projects, add_project]})
+            }).catch(error => console.log(error))
+    }
+
     render() {
         return (
             <div>
@@ -149,6 +195,10 @@ class App extends React.Component {
                         <Route exact path='/login' element={<LoginForm get_token={(login, password) => this.get_token(login, password)} /> } />
                         <Route path='/users' element={<Navigate to="/" />} />
                         <Route path='/projects/:id'   element={<ProjectDetails projects={this.state.projects} /> } />
+                        <Route exact path='/' element={() => <ProjectList projects={this.state.projects} deleteProject={(id) => this.deleteProject(id)}/>}/>
+                        <Route exact path='/projects/create' element={() => <ProjectForm createProject={(name, repo_url) => this.createProject(name, repo_url)}/>}/>
+                        <Route exact path='/todos/create' element={() => <TodoForm projects={this.state.projects} createTodo={(text, project, user) => this.createTodo(text, project, user)}/>}/>
+                        <Route exact path='/todo' element={() => <TodoList todo={this.state.todo} deleteTodo={(id) => this.deleteTodo(id)}/>}/>
                         <Route path="*" element={<NotFound /> } />
                     </Routes>
                 </BrowserRouter>
