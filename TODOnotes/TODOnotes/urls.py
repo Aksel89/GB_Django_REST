@@ -14,8 +14,53 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.routers import DefaultRouter
+from users.views import UserViewSet
+from todoapp.views import ProjectViewSet, TodoViewSet
+from rest_framework.authtoken import views
+from rest_framework.permissions import AllowAny
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView
+
+from users.schema import schema
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title='Todo',
+        default_version='1.0',
+        description='Project documentation',
+        contact=openapi.Contact(email='admin@examle.com'),
+        license=openapi.License(name='MIT')
+    ),
+    public=True,
+    permission_classes=(AllowAny,)
+
+)
+
+
+router = DefaultRouter()
+router.register('users', UserViewSet)
+router.register('projects', ProjectViewSet)
+router.register('todo', TodoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api-auth-token/', views.obtain_auth_token ),
+    path('api/', include(router.urls)),
+    path('api/users/', UserViewSet.as_view({'get': 'list'})),
+    path('api/projects/', ProjectViewSet.as_view({'get': 'list'})),
+    path('api/todo/', TodoViewSet.as_view({'get': 'list'})),
+
+    re_path(r'^api/(?P<version>.\d)', UserViewSet.as_view({'get': 'list'})),
+    path('api/users/v1', include('users.urls', namespace='v1')),
+    path('api/users/v2', include('users.urls', namespace='v2')),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0)),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
 ]
