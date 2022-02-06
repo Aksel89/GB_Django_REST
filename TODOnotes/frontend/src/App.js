@@ -11,6 +11,7 @@ import {Box, Row, Column, Container} from "./components/header.js";
 import axios from "axios"
 import ProjectForm from "./components/ProjectForm";
 import TodoForm from "./components/TodoForm";
+import Cookies from "universal-cookie";
 
 
 const NotFound = ({ }) => {
@@ -30,38 +31,79 @@ class App extends React.Component {
         }
     }
 
-    get_token(login, password) {
-        axios
-            .post('http://127.0.0.1:8000/api-auth-token/', {'username': login, 'password': password})
-            .then(response => {
-                const token = response.data.token
-                    console.log(token)
-                    localStorage.setItem('token', token)
-                this.setState({
-                    'token': token
-                }, this.get_data)
-            })
-            .catch(error => console.log(error))
+    set_token(token) {
+        const cookies = new Cookies()
+        cookies.set('token', token)
+        this.setState({token: token}, () => this.get_data())
     }
-
+    is_auth() {
+        return this.state.token !== ''
+    }
     logout() {
-        localStorage.setItem('token', '')
-        this.setState({
-            'token': ''
-        }, this.get_data)
+        this.set_token('')
+    }
+    get_token_storage() {
+        const cookies = new Cookies()
+        const token = cookies.get('token')
+        this.setState({'token': token}, () => this.get_data())
+    }
+    get_token(username, password) {
+        axios
+            .post('http://127.0.0.1:8000/api-token-auth/', {
+                username: username,
+                password: password
+            })
+            .then(response => {
+                this.set_token(response.data['token'])
+                console.log(this.state.token)
+            })
+            .catch(error => alert('Wrong username or password'))
     }
 
     componentDidMount() {
-        let token = localStorage.getItem('token')
-        this.setState({
-            'token': token
-        }, this.get_data)
+        this.get_token_storage()
     }
 
-    is_auth() {
-        return !!this.state.token
-    }
+    // get_headers() {
+    //     let headers = {'Content-Type': 'application/json'};
+    //     if (this.is_authenticated()) {
+    //         headers['Authorization'] = 'Token' + this.state.token
+    //     }
+    //     return headers
+    // }
 
+    // get_token(login, password) {
+    //     axios
+    //         .post('http://127.0.0.1:8000/api-auth-token/', {'username': login, 'password': password})
+    //         .then(response => {
+    //             const token = response.data.token
+    //                 console.log(token)
+    //                 localStorage.setItem('token', token)
+    //             this.setState({
+    //                 'token': token
+    //             }, this.get_data)
+    //         })
+    //         .catch(error => console.log(error))
+    // }
+    //
+    // logout() {
+    //     localStorage.setItem('token', '')
+    //     this.setState({
+    //         'token': ''
+    //     }, this.get_data)
+    // }
+    //
+    // componentDidMount() {
+    //     let token = localStorage.getItem('token')
+    //     this.setState({
+    //         'token': token
+    //     }, this.get_data)
+    // }
+    //
+    // is_auth() {
+    //     return !!this.state.token
+    // }
+    //
     get_headers() {
         if (this.is_auth()) {
             return {
